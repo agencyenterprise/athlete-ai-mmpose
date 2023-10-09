@@ -312,6 +312,7 @@ class Pose2DInferencer(BaseMMPoseInferencer):
             inputs, batch_size=batch_size, **preprocess_kwargs)
 
         preds = []
+        print('test')
 
         for proc_inputs, ori_inputs in inputs:
             preds = self.forward(proc_inputs, **forward_kwargs)
@@ -320,7 +321,9 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                                            **visualize_kwargs)
             results = self.postprocess(preds, visualization, return_datasample,
                                        **postprocess_kwargs)
-            results['cat_ids'] = self.det_cat_ids
+            print(self.det_cat_ids)
+            results['visualization'] = self.det_cat_ids
+            print(results)
             yield results
 
         if self._video_input:
