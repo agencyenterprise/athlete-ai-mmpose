@@ -187,7 +187,7 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                     input, return_datasample=True)['predictions']
                 pred_instance = det_results[0].pred_instances.cpu().numpy()
                 bboxes = np.concatenate(
-                    (pred_instance.bboxes, pred_instance.scores[:, None]),
+                    (pred_instance.bboxes, pred_instance.scores[:, None], pred_instance.labels[:, None]),
                     axis=1)
 
                 label_mask = np.zeros(len(bboxes), dtype=np.uint8)
@@ -204,7 +204,7 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                 for bbox in bboxes:
                     inst = data_info.copy()
                     inst['bbox'] = bbox[None, :4]
-                    inst['bbox_score'] = bbox[4:5]
+                    inst['bbox_score'] = bbox[4:6]
                     data_infos.append(self.pipeline(inst))
             else:
                 inst = data_info.copy()
@@ -312,7 +312,6 @@ class Pose2DInferencer(BaseMMPoseInferencer):
             inputs, batch_size=batch_size, **preprocess_kwargs)
 
         preds = []
-        print('test')
 
         for proc_inputs, ori_inputs in inputs:
             preds = self.forward(proc_inputs, **forward_kwargs)
@@ -321,9 +320,6 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                                            **visualize_kwargs)
             results = self.postprocess(preds, visualization, return_datasample,
                                        **postprocess_kwargs)
-            print(self.det_cat_ids)
-            results['visualization'] = self.det_cat_ids
-            print(results)
             yield results
 
         if self._video_input:
