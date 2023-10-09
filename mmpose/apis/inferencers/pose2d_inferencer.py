@@ -204,7 +204,7 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                 for bbox in bboxes:
                     inst = data_info.copy()
                     inst['bbox'] = bbox[None, :4]
-                    inst['bbox_score'] = bbox[5:6]
+                    inst['bbox_score'] = bbox[5:6]*10+bbox[4:5]
                     data_infos.append(self.pipeline(inst))
             else:
                 inst = data_info.copy()
