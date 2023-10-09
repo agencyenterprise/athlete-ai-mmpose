@@ -252,10 +252,6 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                 if 'bbox_scores' in ds.pred_instances:
                     ds.pred_instances = ds.pred_instances[
                         ds.pred_instances.bbox_scores > bbox_thr]
-                    
-        for ds in data_samples:
-            ds.pred_instances.cat_id = self.det_cat_ids
-
         return data_samples
 
     def __call__(
@@ -324,6 +320,7 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                                            **visualize_kwargs)
             results = self.postprocess(preds, visualization, return_datasample,
                                        **postprocess_kwargs)
+            results['cat_ids'] = self.det_cat_ids
             yield results
 
         if self._video_input:
