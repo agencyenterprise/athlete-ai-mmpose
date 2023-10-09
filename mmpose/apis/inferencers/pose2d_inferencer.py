@@ -252,6 +252,10 @@ class Pose2DInferencer(BaseMMPoseInferencer):
                 if 'bbox_scores' in ds.pred_instances:
                     ds.pred_instances = ds.pred_instances[
                         ds.pred_instances.bbox_scores > bbox_thr]
+                    
+        for ds in data_samples:
+            ds.pred_instances.cat_id = self.det_cat_ids
+
         return data_samples
 
     def __call__(
